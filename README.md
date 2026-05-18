@@ -1,7 +1,34 @@
-# Kausa
+# Guia de Configuração do Projeto Kausa
 
-Este documento contém instruções para descarregar e usar o conteudo deste repositório no pycharm.
-Alternativamente, foi também adicionado um ficheiro README_GPT, que é um prompt que poderá ser colocado numa ferramenta de LLM e.g. ChatGPT de forma a obter as instruções por essa via.
+Este documento explica, passo a passo, como configurar e executar o projeto Kausa num novo computador utilizando PyCharm.
+
+O guia foi pensado para utilizadores com pouca experiência em Django, React, Git e GitHub, incluindo instruções detalhadas desde a instalação das dependências até à execução do backend e frontend.
+
+Também inclui:
+- comandos Git essenciais;
+- resolução de erros comuns;
+- explicação da estrutura do projeto;
+- boas práticas para trabalhar em equipa.
+
+---
+
+# Índice
+
+1. Programas necessários
+2. Clonar o projeto
+3. Abrir o projeto no PyCharm
+4. Criar ambiente virtual
+5. Instalar dependências do Django
+6. Aplicar migrations
+7. Iniciar o backend Django
+8. Configurar o frontend React
+9. Instalar dependências do frontend
+10. Iniciar o frontend Vite
+11. Como correr o projeto no dia a dia
+12. Comandos úteis de Git
+13. Problemas comuns e soluções
+14. Estrutura do projeto
+15. Notas importantes
 
 ---
 
