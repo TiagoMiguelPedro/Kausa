@@ -1,0 +1,20 @@
+[
+  {
+    "titulo": "Contactos",
+    "lista": [{"texto": "912 467 973", "link": "tel:+351912467973"},
+              {"texto": "223 456 789", "link": "tel:+351223456789"}
+    ]
+  },
+  {
+    "titulo": "Emails",
+    "lista": [{"texto": "geral@kausa.pt", "link": "tel:+351912467973"},
+              {"texto": "suporte@kausa.pt", "link": "mailto:suporte@kausa.pt"}
+    ]
+  },
+  {
+    "titulo": "Redes Sociais",
+    "lista": [{ "texto": "Instagram", "link": "https://instagram.com/" },
+            { "texto": "Facebook", "link": "https://facebook.com/" }
+    ]
+  }
+]
