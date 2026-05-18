@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+media/
+
+# React / Node
+node_modules/
+dist/
+
+# Environment files
+.env
+
+# MacOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
