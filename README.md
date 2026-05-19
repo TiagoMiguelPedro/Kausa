@@ -219,6 +219,22 @@ npm run dev
 ```bash
 git status
 ```
+## Listar branches locais e remotos
+
+```bash
+git branch -a
+```
+## Navegar entre branches
+
+```bash
+git checkout nome_do_branch
+```
+## Criar um branch
+
+```bash
+git checkout -b nome_do_branch
+```
+
 
 ## Adicionar alterações
 
