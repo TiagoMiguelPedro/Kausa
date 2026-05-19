@@ -1,12 +1,12 @@
 import App from "../../App.jsx";
-import HeroContainer from "../homepage/HeroContainer.jsx";
+import HeroCard from "../homepage/HeroCard.jsx";
 
 function Home(){
 
     return(
         <>
             <div className="page">
-              <HeroContainer/>
+              <HeroCard/>
             </div>
         </>
     );

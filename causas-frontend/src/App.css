@@ -14,6 +14,8 @@
   background: var(--gray-50);
 }
 
+/* Base */
+
 * {
   box-sizing: border-box;
 }
@@ -51,28 +53,45 @@ button {
   margin-bottom: 24px;
 }
 
-/* Navbar */
+/* Header */
 
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.site-header {
+  width: 100%;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--gray-100);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.navbar-content {
+.header-container {
+  max-width: 1200px;
   height: 72px;
+  margin: 0 auto;
+  padding: 0 32px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.logo {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: var(--green-dark);
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.brand-logo {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #1f2937;
 }
 
 .nav-links {
@@ -81,15 +100,60 @@ button {
   font-size: 0.95rem;
 }
 
+.nav-links a {
+  color: #4b5563;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
 .nav-links a:hover {
   color: var(--green);
 }
 
-/* Botões */
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-login {
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  border-radius: 15px;
+  color: #374151;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn-login:hover {
+  background: #f3f4f6;
+}
+
+/*
+  Botão principal específico do header.
+  Mantém compatibilidade com JSX atual: <button className="btn-primary">
+  Como está limitado a .site-header, não afeta os botões do hero/cards.
+*/
+
+.site-header .btn-primary {
+  border: none;
+  background: #2f8f5b;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 15px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.site-header .btn-primary:hover {
+  background: #26764b;
+}
+
+/* Botões gerais */
 
 .btn {
   border: none;
-  border-radius: 12px;
+  border-radius: 15px;
   padding: 12px 20px;
   font-weight: 700;
   transition: 0.2s ease;
@@ -122,15 +186,18 @@ button {
   grid-template-columns: 1.1fr 0.9fr;
   gap: 32px;
   align-items: center;
+
   padding: 56px;
   margin-top: 32px;
-  background: white;
-  border-radius: 28px;
-  box-shadow: 0 20px 60px rgba(20, 24, 20, 0.08);
+
+  background-color: white;
   background-image: url("./imagens/home_container_bckg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(20, 24, 20, 0.08);
 }
 
 .hero h1 {
@@ -217,9 +284,9 @@ button {
 
 .stat {
   background: white;
+  border: 1px solid var(--gray-100);
   border-radius: 20px;
   padding: 24px;
-  border: 1px solid var(--gray-100);
 }
 
 .stat strong {
@@ -231,181 +298,7 @@ button {
   color: var(--gray-600);
 }
 
-
-/* Responsivo */
-
-@media (max-width: 900px) {
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 36px;
-  }
-
-  .card-grid,
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .nav-links {
-    display: none;
-  }
-}
-
-@media (max-width: 560px) {
-  .page {
-    width: min(100% - 20px, 1180px);
-  }
-
-  .hero {
-    padding: 28px;
-    border-radius: 22px;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-  }
-
-  .card-grid,
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .section {
-    margin: 36px 0;
-  }
-}
-
-/*Header*/
-
-.site-header {
-  width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 18px 32px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0px;
-}
-
-.brand-icon {
-  width: 38px;
-  height: 38px;
-
-  border-radius: 12px;
-  background: #e8f5ee;
-  color: #2f8f5b;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.brand-logo {
-  width: 65px;
-  height: 65px;
-  object-fit: contain;
-}
-
-.brand-name {
-  font-size: 1.7rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.nav-links {
-  display: flex;
-  gap: 28px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #4b5563;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.nav-links a:hover {
-  color: #2f8f5b;
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.btn-login {
-  border: none;
-  background: transparent;
-
-  padding: 10px 16px;
-  border-radius: 999px;
-
-  cursor: pointer;
-  font-weight: 600;
-  color: #374151;
-
-  transition: 0.2s;
-}
-
-.btn-login:hover {
-  background: #f3f4f6;
-}
-
-.btn-primary {
-  border: none;
-  background: #2f8f5b;
-  color: white;
-
-  padding: 10px 18px;
-  border-radius: 999px;
-
-  cursor: pointer;
-  font-weight: 600;
-
-  transition: 0.2s;
-}
-
-.btn-primary:hover {
-  background: #26764b;
-}
-
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
-  .header-container {
-    padding: 16px 20px;
-  }
-
-  .btn-login {
-    display: none;
-  }
-
-  .brand-name {
-    font-size: 1.2rem;
-  }
-}
-
-/* FOOTER */
+/* Footer */
 
 .site-footer {
   background-color: #ffffff;
@@ -418,6 +311,7 @@ button {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem 3rem;
+
   display: flex;
   justify-content: space-between;
   gap: 4rem;
@@ -454,12 +348,11 @@ button {
 .footer-column a,
 .footer-column span {
   color: #6b7280;
-  text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .footer-column a:hover {
-  color: #16a34a;
+  color: var(--green);
 }
 
 .footer-bottom {
@@ -468,4 +361,60 @@ button {
   padding: 1.5rem;
   color: #9ca3af;
   font-size: 0.9rem;
+}
+
+/* Responsivo */
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 36px;
+  }
+
+  .card-grid,
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 20px;
+  }
+
+  .btn-login {
+    display: none;
+  }
+
+  .brand-name {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    width: min(100% - 20px, 1180px);
+  }
+
+  .hero {
+    padding: 28px;
+    border-radius: 22px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .card-grid,
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    margin: 36px 0;
+  }
 }

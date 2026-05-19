@@ -1,4 +1,4 @@
-function HeroContainer() {
+function HeroCard() {
     return (
         <section className="hero">
             <div>
@@ -13,4 +13,4 @@ function HeroContainer() {
     );
 }
 
-export default HeroContainer
+export default HeroCard
