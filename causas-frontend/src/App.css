@@ -127,6 +127,10 @@ button {
   background: white;
   border-radius: 28px;
   box-shadow: 0 20px 60px rgba(20, 24, 20, 0.08);
+  background-image: url("./imagens/home_container_bckg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hero h1 {
@@ -150,12 +154,6 @@ button {
   display: flex;
   gap: 14px;
   margin-top: 28px;
-}
-
-.hero-image {
-  min-height: 360px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, var(--green-light), #d6e8ce);
 }
 
 /* Cards */
@@ -232,6 +230,7 @@ button {
 .stat span {
   color: var(--gray-600);
 }
+
 
 /* Responsivo */
 

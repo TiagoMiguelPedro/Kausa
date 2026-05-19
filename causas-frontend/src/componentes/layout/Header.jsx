@@ -16,8 +16,8 @@ function Header(){
                 <nav className="nav-links">
                     <a href="#inicio">Início</a>
                     <a href="#causas">Causas</a>
-                    <a href="#sobre">Sobre</a>
-                    <a href="#contactos">Contactos</a>
+                    <a href="#eventos">Eventos</a>
+                    <a href="#sobre">Sobre nós</a>
                 </nav>
 
                 <div className="header-actions">
