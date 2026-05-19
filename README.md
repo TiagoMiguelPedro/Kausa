@@ -211,6 +211,49 @@ npm run dev
 ```
 
 ---
+# Passos para iniciar o trabalho (Git)
+
+No diretório /Kausa
+
+## 1
+
+```bash
+git checkout main
+```
+
+## 2
+
+```bash
+git pull origin main
+```
+
+## 3
+
+```bash
+git checkout -b nome_branch
+```
+
+Depois de trabalhar, continuando no branch criado no passo 3, fazer:
+
+## 4
+
+```bash
+git add . 
+```
+
+## 4
+
+```bash
+git commit -m "mensagem_qualquer"
+```
+
+## 4
+
+```bash
+git push origin nome_do_branch
+```
+
+---
 
 # Comandos úteis de Git
 
