@@ -4,28 +4,28 @@ import footerItems from "../../data/footer.json"
 function Footer(){
 
     return(
-        <nav>
-            <table>
-                <tbody>
-                    <tr>
-                        {footerItems.map((item, index) => (
-                            <td key={index}>
-                                <strong>{item.titulo}</strong>
-                                <ul>
-                                    {item.lista.map((entrada, i) => (
-                                        <li key={i}>
-                                            <a href={entrada.link}>
-                                                {entrada.texto}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </td>
-                        ))}
-                    </tr>
-                </tbody>
-            </table>
-        </nav>
+        <footer className="site-footer">
+            <div className="footer-container">
+                <div className="footer-links">
+                    <div className="footer-column">
+                        <h4>Legal</h4>
+                        <a href="/">Privacidade</a>
+                        <a href="/">Termos</a>
+                    </div>
+
+                    <div className="footer-column">
+                        <h4>Contactos</h4>
+                        <span><b>Email: </b>geral@kausa.pt</span>
+                        <span><b>Morada: </b>R. da Solidariedade, Nº29 | 1500-001, Lisboa</span>
+                        <a href="/">Questões frequentes</a>
+                    </div>
+                </div>
+            </div>
+
+            <div className="footer-bottom">
+                <p>© 2026 Kausa. Todos os direitos reservados.</p>
+            </div>
+        </footer>
     );
 }
 
