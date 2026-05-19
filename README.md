@@ -241,13 +241,13 @@ Depois de trabalhar, continuando no branch criado no passo 3, fazer:
 git add . 
 ```
 
-## 4
+## 5
 
 ```bash
 git commit -m "mensagem_qualquer"
 ```
 
-## 4
+## 6
 
 ```bash
 git push origin nome_do_branch
