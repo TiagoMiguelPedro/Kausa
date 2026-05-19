@@ -263,6 +263,8 @@ O processo consiste em alinhar as alterações e criar um pedido de integração
 
 ## ou
 
+No diretório /Kausa
+
 ```bash
 git checkout main
 ```
