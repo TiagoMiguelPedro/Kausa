@@ -252,6 +252,30 @@ git commit -m "mensagem_qualquer"
 ```bash
 git push origin nome_do_branch
 ```
+## Merge
+
+O processo consiste em alinhar as alterações e criar um pedido de integração.Acesse o repositório: 
+1-Entre no GitHub e vá até o repositório do seu projeto.
+2-Abra um Pull Request: Clique na aba Pull requests localizada no menu superior do repositório.
+3-Crie a solicitação: Clique no botão verde New pull request.
+4-Selecione os branches: Na tela de comparação, no campo base, selecione main e, no campo compare, selecione o seu branch.
+5-Verifique e confirme: O GitHub informará se há conflitos. Se não houver, clique no botão verde Create pull request e, em seguida, em Merge pull request para finalizar. Confirme clicando em Confirm merge
+
+## ou
+
+```bash
+git checkout main
+```
+```bash
+git pull origin main
+```
+```bash
+git merge nome_do_branch
+```
+```bash
+git push origin main
+```
+
 
 ---
 
