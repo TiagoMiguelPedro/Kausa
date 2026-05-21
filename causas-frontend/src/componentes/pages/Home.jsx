@@ -1,9 +1,14 @@
-
+import App from "../../App.jsx";
+import HeroCard from "../homepage/HeroCard.jsx";
 
 function Home(){
 
     return(
-      <h1>Home</h1>
+        <>
+            <div className="page">
+              <HeroCard/>
+            </div>
+        </>
     );
 }
 export default Home
