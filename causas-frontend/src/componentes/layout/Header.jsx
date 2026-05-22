@@ -12,12 +12,10 @@ function Header(){
                     <img src={imgLogo} alt="Kausa Logo" className="brand-logo"/>
                     <span className="brand-name">Kausa</span>
                 </div>
-
                 <Navbar/>
-
                 <div className="header-actions">
-                    <button className="btn-login">Entrar</button>
-                    <button className="btn-primary">Criar conta</button>
+                    <Link to="/login" className="btn-login">Entrar</Link>
+                    <Link to="/Register" className="btn-primary">Criar conta</Link>
                 </div>
             </div>
         </header>
