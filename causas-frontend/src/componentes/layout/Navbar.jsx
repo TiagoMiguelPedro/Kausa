@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 function Navbar() {
 
     return (
-        <nav>
+        <nav className="nav-links">
             <table>
                 <tbody>
                 <tr>

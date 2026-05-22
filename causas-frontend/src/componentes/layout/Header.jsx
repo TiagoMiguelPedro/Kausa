@@ -13,12 +13,7 @@ function Header(){
                     <span className="brand-name">Kausa</span>
                 </div>
 
-                <nav className="nav-links">
-                    <a href="#inicio">Início</a>
-                    <a href="#causas">Causas</a>
-                    <a href="#eventos">Eventos</a>
-                    <a href="#sobre">Sobre nós</a>
-                </nav>
+                <Navbar/>
 
                 <div className="header-actions">
                     <button className="btn-login">Entrar</button>
