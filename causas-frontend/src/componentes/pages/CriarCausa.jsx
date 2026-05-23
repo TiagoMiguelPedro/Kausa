@@ -1,4 +1,5 @@
 import "./CriarCausa.css";
+import CriarVagaCard from "../vagas/CriarVagaCard.jsx";
 
 function CriarCausa() {
   return (
@@ -108,6 +109,8 @@ function CriarCausa() {
           </div>
         </aside>
       </section>
+
+      <CriarVagaCard />
     </main>
   );
 }

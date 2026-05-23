@@ -487,3 +487,116 @@ button {
     font-size: 32px;
   }
 }
+
+/* Criar Vaga */
+
+.criar-vaga-card {
+  width: 100%;
+  margin-top: 40px;
+  padding: 36px;
+  background: #ffffff;
+  border: 1px solid #e8e4dc;
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(39, 58, 45, 0.08);
+  box-sizing: border-box;
+}
+
+.criar-vaga-header {
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+
+.criar-vaga-header span {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #edf5ea;
+  color: #568a47;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.criar-vaga-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 30px;
+  color: #20232a;
+}
+
+.criar-vaga-header p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.criar-vaga-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.criar-vaga-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.criar-vaga-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.criar-vaga-field label {
+  font-weight: 700;
+  color: #374151;
+  font-size: 14px;
+}
+
+.criar-vaga-field input,
+.criar-vaga-field select,
+.criar-vaga-field textarea {
+  width: 100%;
+  border: 1px solid #dedbd2;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  background: #ffffff;
+  color: #20232a;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.criar-vaga-field input:focus,
+.criar-vaga-field select:focus,
+.criar-vaga-field textarea:focus {
+  border-color: #5f9a4f;
+  box-shadow: 0 0 0 4px rgba(95, 154, 79, 0.12);
+}
+
+.criar-vaga-field textarea {
+  resize: vertical;
+}
+
+.criar-vaga-actions {
+  margin-top: 28px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .criar-vaga-card {
+    padding: 28px;
+  }
+
+  .criar-vaga-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .criar-vaga-actions {
+    flex-direction: column;
+  }
+
+  .criar-vaga-actions .btn {
+    width: 100%;
+  }
+}

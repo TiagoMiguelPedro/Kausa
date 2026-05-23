@@ -14,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/criar-causa" element={<CriarCausa />} />
+          <Route path="/criar-causa" element={<CriarCausa />} />
         </Routes>
 
         <Footer />
