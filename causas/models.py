@@ -25,7 +25,7 @@ class Evento(models.Model):
     evento_ativo = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.evento_name
+        return self.evento_nome
 
     def publicado_recentemente(self):
         return self.evento_dataHora >= timezone.now() -datetime.timedelta(days=1)

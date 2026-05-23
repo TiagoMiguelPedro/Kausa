@@ -41,9 +41,23 @@ def causa_detail(request, causa_id):
 
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET', 'POST'])
-def eventos(request, causa_id):
+def eventos(request):
+
+    if request.method == 'GET':
+        lista_eventos = Evento.objects.all()
+        serializer = EventoSerializer(lista_eventos, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = EventoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['GET', 'POST'])
+def eventos_por_causa(request, causa_id):
 
     if request.method == 'GET':
         causa = Causa.objects.get(pk=causa_id)
@@ -86,7 +100,7 @@ def participantes(request, evento_id):
 
     if request.method == 'GET':
         evento = Evento.objects.get(pk=evento_id)
-        lista_participantes = evento.participantes_set.all()
+        lista_participantes = evento.participante_set.all()
         serializer = ParticipanteSerializer(lista_participantes, many=True)
         return Response(serializer.data)
 
