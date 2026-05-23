@@ -14,6 +14,7 @@ import CriarCausa from "./componentes/pages/CriarCausa.jsx";
 function App() {
 
     return (
+
         <>
             <BrowserRouter>
                 <Header/>

@@ -129,6 +129,31 @@ button {
   background: #f3f4f6;
 }
 
+.btn-logout {
+  border: none;
+  border-radius: 15px;
+
+  padding: 5px 10px;
+
+  background: #ef4444;
+  color: white;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-logout:hover {
+  background: #dc2626;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 /*
   Botão principal específico do header.
   Mantém compatibilidade com JSX atual: <button className="btn-primary">
@@ -332,8 +357,8 @@ button {
 
 .register-card {
   width: 100%;
-  max-width: 420px;
-  max-height: 820px;
+  max-width: 520px;
+  height: 1044px;
   margin-bottom: 24px;
 
   background: white;
