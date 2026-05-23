@@ -2,12 +2,14 @@ from rest_framework import serializers
 from .models import Causa, Evento, Participante, CausaVoto, Comentario, LikeComentario
 
 class CausaSerializer(serializers.ModelSerializer):
+    causa_responsavel_nome = serializers.CharField(source='causa_responsavel.username', read_only=True)
     class Meta:
         model = Causa
         fields = ('id', 'causa_responsavel', 'causa_nome', 'causa_descricao', 'causa_nrVotos', 'causa_estado')
 
 class EventoSerializer(serializers.ModelSerializer):
     evento_dataHora = serializers.DateTimeField(read_only=True, required=False)
+    causa_nome = serializers.CharField(source='evento_causa.causa_nome', read_only=True)
     class Meta:
         model = Evento
         fields = ('id', 'evento_causa', 'evento_nome', 'evento_descricao', 'evento_localizacao', 'evento_dataHora', 'evento_limiteParticipantes', 'evento_lotado', 'evento_ativo')

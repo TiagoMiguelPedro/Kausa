@@ -1,20 +1,76 @@
+import {useEffect, useState} from "react";
+import axios from "axios";
+import DestaqueCard from "../cards/DestaqueCard.jsx";
+import ModalDetalhes from "../modal/ModalDetalhes.jsx";
 
+function Causas() {
+    const [causas, setCausas] = useState([]);
+    const [causaSelecionada, setCausaSelecionada] = useState(null);
 
+    const URL_CAUSAS = "http://localhost:8000/causas/causas/";
 
-function Causas(){
+    useEffect(() => {
+        axios.get(URL_CAUSAS)
+            .then((request) => {
+                setCausas(request.data);
+            })
+            .catch((err) => {
+                console.error("Erro ao carregar causas:", err);
+            });
+    }, []);
 
+    const mostrarEstado = (estado) => {
+        if (estado === 0) return "Em votação";
+        if (estado === 1) return "Ativa";
+        if (estado === 2) return "Concluída";
+        return "Desconhecido";
+    };
 
     return (
         <div className="page">
-            <section className="hero">
-            <div>
-                <p>Descobre causas que te inspiram, participa em eventos e faz a diferença na tua comunidade.</p>
-                <div className="hero-actions">
-                    <button className="btn btn-primary">Explorar causas</button>
-                    <button className="btn btn-secondary">Criar causa</button>
-                </div>
+            <h1>Causas</h1>
+
+            <div className="listagem-grid">
+                {causas.length === 0 ? (
+                    <p>Ainda não existem causas registadas.</p>
+                ) : (
+                    causas.map((causa) => (
+                        <DestaqueCard
+                            key={causa.id}
+                            titulo={causa.causa_nome}
+                            subtitulo={`Responsável: ${causa.causa_responsavel_nome}`}
+                            descricao={causa.causa_descricao}
+                            textoBotao="Ver detalhes"
+                            onClick={() => setCausaSelecionada(causa)}
+                        />
+                    ))
+                )}
             </div>
-        </section>
+
+            {causaSelecionada && (
+                <ModalDetalhes
+                    titulo={causaSelecionada.causa_nome}
+                    onClose={() => setCausaSelecionada(null)}
+                >
+                    <p>
+                        <strong>Responsável:</strong>{" "}
+                        {causaSelecionada.causa_responsavel_nome}
+                    </p>
+
+                    <p>
+                        <strong>Descrição:</strong> {causaSelecionada.causa_descricao}
+                    </p>
+
+                    <p>
+                        <strong>Número de votos:</strong> {causaSelecionada.causa_nrVotos}
+                    </p>
+
+                    <p>
+                        <strong>Estado:</strong>{" "}
+                        {mostrarEstado(causaSelecionada.causa_estado)}
+                    </p>
+                </ModalDetalhes>
+            )}
         </div>
     );
 }
