@@ -3,9 +3,16 @@ import imgLogo from "../../imagens/logo_kausa.png"
 import Navbar from "./Navbar.jsx";
 
 
-function Header(){
+function Header() {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-    return(
+    function handleLogout() {
+        localStorage.removeItem("user");
+
+        window.location.href = "/";
+    }
+
+    return (
         <header className="site-header">
             <div className="header-container">
                 <div className="brand">
@@ -14,8 +21,19 @@ function Header(){
                 </div>
                 <Navbar/>
                 <div className="header-actions">
-                    <Link to="/login" className="btn-login">Entrar</Link>
-                    <Link to="/Register" className="btn-primary">Criar conta</Link>
+                    {user ? (
+                        <div className="user-menu">
+                            <span>Bem vindo à Kausa, {user.first_name || user.username}</span>
+                            <button className="btn-logout" onClick={handleLogout}>
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <Link to="/login" className="btn-login">Entrar</Link>
+                            <Link to="/register" className="btn-primary">Criar conta</Link>
+                        </>
+                    )}
                 </div>
             </div>
         </header>
