@@ -28,7 +28,7 @@ function Login() {
                     "user",
                     JSON.stringify(response.data.user)
                 );
-                window.location.href = "/";
+                navigate("/");
             })
             .catch((err) => {
                 console.log(err);

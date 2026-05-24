@@ -120,7 +120,6 @@ function Register() {
                 </form>
                 <p className="auth-footer">
 
-                    <p></p>
                     Já tens conta? <Link to="/login">Entrar</Link>
                 </p>
             </section>

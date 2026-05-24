@@ -29,20 +29,17 @@ def causas(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
+
+        if not request.user.is_authenticated:
+            return Response(
+                {"msg": "Tem de estar autenticado para criar uma causa"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
         serializer = CausaSerializer(data=request.data)
 
         if serializer.is_valid():
-            user = User.objects.filter(username="teste").first()
-
-            if user is None:
-                user = User.objects.create_user(
-                    username="teste",
-                    email="teste@teste.pt",
-                    password="12345"
-                )
-
-            serializer.save(causa_responsavel=user)
-
+            serializer.save(causa_responsavel=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -215,3 +212,8 @@ def login_view(request):
         }
     })
 
+
+@api_view(["POST"])
+def logout_view(request):
+    logout(request)
+    return Response({"msg": "Logout com sucesso"})
