@@ -10,9 +10,11 @@ class CausaSerializer(serializers.ModelSerializer):
 
 class EventoSerializer(serializers.ModelSerializer):
     causa_nome = serializers.CharField(source='evento_causa.causa_nome', read_only=True)
+    evento_criador_nome = serializers.CharField(source='evento_criador.username', read_only=True)
     class Meta:
         model = Evento
-        fields = ('id', 'evento_causa','causa_nome', 'evento_nome', 'evento_descricao', 'evento_localizacao', 'evento_dataHora', 'evento_limiteParticipantes', 'evento_lotado', 'evento_ativo')
+        fields = ('id', 'evento_causa','causa_nome', 'evento_criador', 'evento_criador_nome', 'evento_nome', 'evento_descricao', 'evento_localizacao', 'evento_dataHora', 'evento_limiteParticipantes', 'evento_lotado', 'evento_ativo')
+        read_only_fields = ('evento_criador',)
 
 class ParticipanteSerializer(serializers.ModelSerializer):
     participante_dataInscricao = serializers.DateTimeField(read_only=True, required=False)
