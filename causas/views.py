@@ -21,8 +21,8 @@ from rest_framework.decorators import (
 
 from rest_framework.permissions import AllowAny
 
-def is_admin(request):
-    return request.user.is_staff or request.user.is_superuser
+def is_admin(user):
+    return user.is_staff or user.is_superuser
 
 @api_view(["GET"])
 def user_view(request):

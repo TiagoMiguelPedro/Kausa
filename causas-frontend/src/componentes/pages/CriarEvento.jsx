@@ -11,16 +11,24 @@ function CriarEvento() {
     const [eventoLocalizacao, setEventoLocalizacao] = useState("");
     const [eventoDataHora, setEventoDataHora] = useState("");
     const [eventoLimiteParticipantes, setEventoLimiteParticipantes] = useState("");
+    const [erro, setErro] = useState("");
 
     const navigate = useNavigate();
 
     const URL_CAUSAS = "http://localhost:8000/causas/causas/";
     const URL_EVENTOS = "http://localhost:8000/causas/eventos/";
 
+    const getCSRFToken = () => {
+        return document.cookie
+            .split("; ")
+            .find(row => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+    };
+
     useEffect(() => {
-        axios.get(URL_CAUSAS)
-            .then((request) => {
-                setCausas(request.data);
+        axios.get(URL_CAUSAS, { withCredentials: true })
+            .then((response) => {
+                setCausas(response.data);
             })
             .catch((err) => {
                 console.error("Erro ao carregar causas:", err);
@@ -41,12 +49,18 @@ function CriarEvento() {
             evento_ativo: true
         };
 
-        axios.post(URL_EVENTOS, novoEvento)
+        axios.post(URL_EVENTOS, novoEvento, {
+            withCredentials: true,
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            }
+        })
             .then(() => {
                 navigate("/eventos");
             })
             .catch((err) => {
                 console.error("Erro ao criar evento:", err.response?.data || err);
+                setErro(err.response?.data?.msg || "Não foi possível criar o evento.");
             });
     };
 
@@ -109,6 +123,8 @@ function CriarEvento() {
                     onChange={(e) => setEventoLimiteParticipantes(e.target.value)}
                     required
                 />
+
+                {erro && <p className="form-error">{erro}</p>}
 
                 <button type="submit" className="btn btn-primary">
                     Criar evento
