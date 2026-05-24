@@ -1,16 +1,38 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import imgLogo from "../../imagens/logo_kausa.png"
 import Navbar from "./Navbar.jsx";
+import axios from "axios";
 
 
 function Header() {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    function handleLogout() {
-        localStorage.removeItem("user");
+    const LOGOUT_URL = "http://localhost:8000/causas/api/logout/";
 
-        window.location.href = "/";
+    const navigate = useNavigate();
+
+    const getCSRFToken = () => {
+        return document.cookie
+            .split("; ")
+            .find(row => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+    };
+
+    function handleLogout() {
+        axios.post(LOGOUT_URL, {}, {
+            withCredentials: true,
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            }
+        })
+            .then(() => {
+                localStorage.removeItem("user");
+                navigate("/");
+            })
+            .catch((err) => {
+                console.error("Erro ao fazer logout:", err.response?.data || err);
+            });
     }
 
     return (

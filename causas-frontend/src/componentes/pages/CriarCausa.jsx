@@ -11,6 +11,12 @@ function CriarCausa() {
 
     const URL_CAUSAS = "http://localhost:8000/causas/causas/";
 
+    const getCSRFToken = () => {
+    return document.cookie
+        .split("; ")
+        .find(row => row.startsWith("csrftoken="))
+        ?.split("=")[1];
+};
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -21,15 +27,15 @@ function CriarCausa() {
             causa_estado: 0
         };
 
-        axios.post(URL_CAUSAS, novaCausa)
+        axios.post(URL_CAUSAS, novaCausa, {withCredentials: true, headers: { 'X-CSRFToken': getCSRFToken(), 'Content-Type': 'multipart/form-data' }})
             .then(() => {
                 navigate("/causas");
             })
             .catch((err) => {
-                console.error("Erro ao criar causa:", err.response?.data || err);
-                setErro("Não foi possível criar a causa.");
+                setErro(err.response?.data?.msg || "Não foi possível criar a causa.");
             });
     };
+
 
     return (
         <div className="page">
