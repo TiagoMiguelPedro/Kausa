@@ -10,11 +10,18 @@ function Home() {
             <div className="page">
                 <HeroCard/>
                 <DestaqueCard
-                    titulo="Causas em destaque"
+                    titulo="Criar Causa"
                     descricao="Descobre causas que precisam de apoio e participa na mudança!"
                     imagem={homeContainerBckg}
                     textoBotao="Ver detalhes"
                     link="/criar-causa"
+                />
+                <DestaqueCard
+                    titulo="Criar evento"
+                    descricao="Descobre causas que precisam de apoio e participa na mudança!"
+                    imagem={homeContainerBckg}
+                    textoBotao="Ver detalhes"
+                    link="/criar-evento"
                 />
             </div>
         </>

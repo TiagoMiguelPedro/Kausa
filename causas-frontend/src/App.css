@@ -332,8 +332,8 @@ button {
 
 .register-card {
   width: 100%;
-  max-width: 420px;
-  max-height: 820px;
+  max-width: 520px;
+  max-height: 1044px;
   margin-bottom: 24px;
 
   background: white;
@@ -607,6 +607,51 @@ button {
     margin-top: 16px;
 }
 
+.form-container {
+    max-width: 600px;
+    margin: 24px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.form-container textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+.btn-logout {
+  border: none;
+  border-radius: 15px;
+
+  padding: 5px 10px;
+
+  background: #ef4444;
+  color: white;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-logout:hover {
+  background: #dc2626;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
 /* Responsivo */
 

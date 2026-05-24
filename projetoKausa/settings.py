@@ -70,7 +70,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'projetoKausa.wsgi.application'
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
