@@ -16,6 +16,7 @@ class Causa(models.Model):
 
 class Evento(models.Model):
     evento_causa = models.ForeignKey(Causa, on_delete=models.CASCADE)
+    evento_criador = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     evento_nome = models.CharField(max_length=100)
     evento_descricao = models.TextField()
     evento_localizacao = models.TextField()
@@ -37,7 +38,7 @@ class Participante(models.Model):
     participante_dataInscricao = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.participante_user
+        return self.participante_user.username
 
 
 class CausaVoto(models.Model):
@@ -48,9 +49,9 @@ class CausaVoto(models.Model):
 
 
 class Comentario(models.Model):
-    comentario_causa = models.ForeignKey(Causa, on_delete=models.CASCADE)
+    comentario_causa = models.ForeignKey(Causa, on_delete=models.CASCADE, null=True, blank=True)
     comentario_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comentario_evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
+    comentario_evento = models.ForeignKey(Evento, on_delete=models.CASCADE, null=True, blank=True)
     comentario_texto = models.TextField()
     comentario_dataComentario = models.DateTimeField(default=timezone.now)
 

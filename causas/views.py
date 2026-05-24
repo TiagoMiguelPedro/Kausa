@@ -21,6 +21,28 @@ from rest_framework.decorators import (
 
 from rest_framework.permissions import AllowAny
 
+def is_admin(request):
+    return request.user.is_staff or request.user.is_superuser
+
+@api_view(["GET"])
+def user_view(request):
+    if request.user.is_authenticated:
+        return Response({
+            "id": request.user.id,
+            "username": request.user.username,
+            "email": request.user.email,
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name,
+            "is_admin": is_admin(request.user),
+        })
+
+    return Response({
+        "id": None,
+        "username": None,
+        "is_admin": False,
+    })
+
+
 @api_view(['GET', 'POST'])
 def causas(request):
     if request.method == 'GET':
@@ -48,18 +70,51 @@ def causas(request):
 @api_view(['PUT', 'DELETE'])
 def causa_detail(request, causa_id):
 
+    if not request.user.is_authenticated:
+        return Response(
+            {"msg": "Tem de estar autenticado."},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
     try:
         causa = Causa.objects.get(pk=causa_id)
     except Causa.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {"msg": "Causa não encontrada."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    user_is_admin = is_admin(request.user)
+    user_is_responsavel = causa.causa_responsavel == request.user
 
     if request.method == 'PUT':
+
+        if not user_is_admin:
+            if not user_is_responsavel:
+                return Response(
+                    {"msg": "Não tem permissão para editar esta causa."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            if causa.causa_estado != 0:
+                return Response(
+                    {"msg": "Só o administrador pode editar uma causa ativa ou concluída."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
         serializer = CausaSerializer(causa, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
 
     elif request.method == 'DELETE':
+
+        if not user_is_admin:
+            return Response(
+                {"msg": "Só o administrador pode eliminar causas."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         causa.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -75,9 +130,35 @@ def eventos(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
+
+        if not request.user.is_authenticated:
+            return Response(
+                {"msg": "Tem de estar autenticado para criar um evento."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        causa_id = request.data.get("evento_causa")
+
+        try:
+            causa = Causa.objects.get(pk=causa_id)
+        except Causa.DoesNotExist:
+            return Response(
+                {"msg": "Causa não encontrada."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        user_is_admin = is_admin(request.user)
+        user_is_responsavel = causa.causa_responsavel == request.user
+
+        if not user_is_admin and not user_is_responsavel:
+            return Response(
+                {"msg": "Só o responsável da causa ou um administrador pode criar eventos para esta causa."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         serializer = EventoSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(evento_criador=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -104,18 +185,54 @@ def eventos_por_causa(request, causa_id):
 @api_view(['PUT', 'DELETE'])
 def evento_detail(request, evento_id):
 
+    if not request.user.is_authenticated:
+        return Response(
+            {"msg": "Tem de estar autenticado."},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
     try:
         evento = Evento.objects.get(pk=evento_id)
     except Evento.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {"msg": "Evento não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    user_is_admin = is_admin(request.user)
+    user_is_criador = evento.evento_criador == request.user
+    user_is_responsavel_causa = evento.evento_causa.causa_responsavel == request.user
+
 
     if request.method == 'PUT':
+        if not user_is_admin and not user_is_criador and not user_is_responsavel_causa:
+            return Response(
+                {"msg": "Não tem permissão para editar este evento."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         serializer = EventoSerializer(evento, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     elif request.method == 'DELETE':
+
+        if user_is_admin:
+            evento.delete()
+            return Response({"msg": "Evento eliminado com sucesso."}, status=status.HTTP_204_NO_CONTENT)
+
+        if not user_is_criador:
+            return Response(
+                {"msg": "Só pode eliminar eventos criados por si."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        if evento.participante_set.exists():
+            return Response(
+                {"msg": "Não pode eliminar este evento porque já tem participantes inscritos."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         evento.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

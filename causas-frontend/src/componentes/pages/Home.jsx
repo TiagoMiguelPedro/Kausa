@@ -1,4 +1,3 @@
-import App from "../../App.jsx";
 import HeroCard from "../homepage/HeroCard.jsx";
 import DestaqueCard from "./destaques/DestaqueCard.jsx";
 import homeContainerBckg from "../../imagens/home_container_bckg.png";
@@ -10,17 +9,17 @@ function Home() {
             <div className="page">
                 <HeroCard/>
                 <DestaqueCard
-                    titulo="Criar Causa"
+                    titulo="Crie uma Causa"
                     descricao="Descobre causas que precisam de apoio e participa na mudança!"
                     imagem={homeContainerBckg}
-                    textoBotao="Ver detalhes"
+                    textoBotao="Criar Causa"
                     link="/criar-causa"
                 />
                 <DestaqueCard
-                    titulo="Criar evento"
+                    titulo="Crie um Evento"
                     descricao="Descobre causas que precisam de apoio e participa na mudança!"
                     imagem={homeContainerBckg}
-                    textoBotao="Ver detalhes"
+                    textoBotao="Criar evento"
                     link="/criar-evento"
                 />
             </div>
