@@ -607,6 +607,27 @@ button {
     margin-top: 16px;
 }
 
+.form-container {
+    max-width: 600px;
+    margin: 24px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.form-container textarea {
+    min-height: 120px;
+    resize: vertical;
+}
 
 /* Responsivo */
 

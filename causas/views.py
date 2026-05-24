@@ -4,10 +4,10 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from .serializers import *
 from .models import Causa, Evento, Participante, CausaVoto, Comentario, LikeComentario
+from django.contrib.auth.models import User
 
 @api_view(['GET', 'POST'])
 def causas(request):
-
     if request.method == 'GET':
         lista_causas = Causa.objects.all()
         serializer = CausaSerializer(lista_causas, many=True)
@@ -15,11 +15,22 @@ def causas(request):
 
     elif request.method == 'POST':
         serializer = CausaSerializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save()
+            user = User.objects.filter(username="teste").first()
+
+            if user is None:
+                user = User.objects.create_user(
+                    username="teste",
+                    email="teste@teste.pt",
+                    password="12345"
+                )
+
+            serializer.save(causa_responsavel=user)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT', 'DELETE'])
 def causa_detail(request, causa_id):

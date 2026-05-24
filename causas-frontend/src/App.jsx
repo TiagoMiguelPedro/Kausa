@@ -9,6 +9,7 @@ import SobreNos from "./componentes/pages/SobreNos.jsx";
 import Login from "./componentes/pages/Login.jsx";
 import Register from "./componentes/pages/Register.jsx";
 import CriarCausa from "./componentes/pages/CriarCausa.jsx";
+import CriarEvento from "./componentes/pages/CriarEvento.jsx";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/causas" element={<Causas/>}/>
                     <Route path="/criar-causa" element={<CriarCausa/>}/>
                     <Route path="/eventos" element={<Eventos/>}/>
+                    <Route path="/criar-evento" element={<CriarEvento/>}/>
                     <Route path="/sobrenos" element={<SobreNos/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/register" element={<Register/>}/>
