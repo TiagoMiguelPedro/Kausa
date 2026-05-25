@@ -38,10 +38,12 @@ function Header() {
     return (
         <header className="site-header">
             <div className="header-container">
-                <div className="brand">
-                    <img src={imgLogo} alt="Kausa Logo" className="brand-logo"/>
-                    <span className="brand-name">Kausa</span>
-                </div>
+                <Link to="/">
+                    <div className="brand">
+                        <img src={imgLogo} alt="Kausa Logo" className="brand-logo"/>
+                        <span className="brand-name">Kausa</span>
+                    </div>
+                </Link>
                 <Navbar/>
                 <div className="header-actions">
                     {user ? (
