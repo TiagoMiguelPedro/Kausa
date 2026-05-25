@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 function CriarEvento() {
     const [causas, setCausas] = useState([]);
@@ -26,9 +26,13 @@ function CriarEvento() {
     };
 
     useEffect(() => {
-        axios.get(URL_CAUSAS, { withCredentials: true })
+        axios.get(URL_CAUSAS, {withCredentials: true})
             .then((response) => {
-                setCausas(response.data);
+                const causasAtivas = response.data.filter(
+                    (causa) => causa.causa_estado === 1
+                );
+
+                setCausas(causasAtivas);
             })
             .catch((err) => {
                 console.error("Erro ao carregar causas:", err);
@@ -63,6 +67,25 @@ function CriarEvento() {
                 setErro(err.response?.data?.msg || "Não foi possível criar o evento.");
             });
     };
+
+    if (causas.length === 0) {
+    return (
+        <div className="page">
+            <h1>Criar Evento</h1>
+
+            <h2 className="form-error">
+                Ainda não existem causas ativas. Só é possível criar eventos para causas ativas.
+            </h2>
+
+            <button
+                className="btn btn-primary"
+                onClick={() => navigate("/causas")}
+            >
+                Ver causas
+            </button>
+        </div>
+    );
+}
 
     return (
         <div className="page">
