@@ -142,6 +142,12 @@ def eventos(request):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+        if causa.causa_estado != 1:
+            return Response(
+                {"msg": "Só é possível criar eventos para causas aprovadas."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         user_is_admin = is_admin(request.user)
         user_is_responsavel = causa.causa_responsavel == request.user
 
@@ -328,7 +334,7 @@ def logout_view(request):
 
 # Votos Causas----------------------------------
 
-LIMITE_VOTOS_CAUSA = 5
+LIMITE_VOTOS_CAUSA = 2
 
 
 @api_view(["POST"])
@@ -377,8 +383,6 @@ def votar_causa(request, causa_id):
     )
 
     causa.causa_nrVotos += 1
-
-    LIMITE_VOTOS_CAUSA = 5
 
     if causa.causa_nrVotos >= LIMITE_VOTOS_CAUSA:
         causa.causa_estado = 1
