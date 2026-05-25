@@ -6,6 +6,7 @@ import ModalDetalhes from "../modal/ModalDetalhes.jsx";
 function Eventos() {
     const [eventos, setEventos] = useState([]);
     const [eventoSelecionado, setEventoSelecionado] = useState(null);
+    const [eventoEmEdicao, setEventoEmEdicao] = useState(null);
 
     const URL_EVENTOS = "http://localhost:8000/causas/eventos/";
 
@@ -112,6 +113,57 @@ function Eventos() {
             });
     };
 
+    const podeEditarEvento = (evento) => {
+        if (!user) return false;
+
+        if (user.is_admin) return true;
+
+        return user.id === evento.evento_criador;
+    };
+
+    const editarEvento = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/causas/eventos/${eventoEmEdicao.id}`,
+                {
+                    evento_causa: eventoEmEdicao.evento_causa,
+                    evento_nome: eventoEmEdicao.evento_nome,
+                    evento_descricao: eventoEmEdicao.evento_descricao,
+                    evento_localizacao: eventoEmEdicao.evento_localizacao,
+                    evento_dataHora: eventoEmEdicao.evento_dataHora,
+                    evento_limiteParticipantes: eventoEmEdicao.evento_limiteParticipantes,
+                    evento_lotado: eventoEmEdicao.evento_lotado,
+                    evento_ativo: eventoEmEdicao.evento_ativo
+                },
+                {
+                    withCredentials: true,
+                    headers: {
+                        "X-CSRFToken": getCSRFToken()
+                    }
+                }
+            );
+
+            setEventos((eventosAtuais) =>
+                eventosAtuais.map((evento) =>
+                    evento.id === eventoEmEdicao.id ? response.data : evento
+                )
+            );
+
+            if (eventoSelecionado?.id === eventoEmEdicao.id) {
+                setEventoSelecionado(response.data);
+            }
+
+            setEventoEmEdicao(null);
+
+        } catch (err) {
+            console.error("Erro ao editar evento:", err.response?.data || err);
+            alert(err.response?.data?.msg || "Erro ao editar evento.");
+        }
+    };
+
+
     return (
         <div className="page">
             <h1>Eventos</h1>
@@ -132,6 +184,8 @@ function Eventos() {
                             onDelete={() => eliminarEvento(evento.id)}
                             podeInscrever={podeInscreverEvento(evento)}
                             onInscrever={() => inscreverEvento(evento.id)}
+                            podeEditar={podeEditarEvento(evento)}
+                            onEdit={() => setEventoEmEdicao(evento)}
                         />
                     ))
                 )}
@@ -189,6 +243,88 @@ function Eventos() {
                             Eliminar evento
                         </button>
                     )}
+                </ModalDetalhes>
+            )}
+            {eventoEmEdicao && (
+                <ModalDetalhes
+                    titulo="Editar evento"
+                    onClose={() => setEventoEmEdicao(null)}
+                >
+                    <form className="form-container" onSubmit={editarEvento}>
+                        <label>Nome do evento:</label>
+                        <input
+                            type="text"
+                            value={eventoEmEdicao.evento_nome}
+                            onChange={(e) =>
+                                setEventoEmEdicao({
+                                    ...eventoEmEdicao,
+                                    evento_nome: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <label>Descrição:</label>
+                        <textarea
+                            value={eventoEmEdicao.evento_descricao}
+                            onChange={(e) =>
+                                setEventoEmEdicao({
+                                    ...eventoEmEdicao,
+                                    evento_descricao: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <label>Localização:</label>
+                        <input
+                            type="text"
+                            value={eventoEmEdicao.evento_localizacao}
+                            onChange={(e) =>
+                                setEventoEmEdicao({
+                                    ...eventoEmEdicao,
+                                    evento_localizacao: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <label>Data e hora:</label>
+                        <input
+                            type="datetime-local"
+                            value={eventoEmEdicao.evento_dataHora?.slice(0, 16)}
+                            onChange={(e) =>
+                                setEventoEmEdicao({
+                                    ...eventoEmEdicao,
+                                    evento_dataHora: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <label>Limite de participantes:</label>
+                        <input
+                            type="number"
+                            min={eventoEmEdicao.numero_participantes || 1}
+                            value={eventoEmEdicao.evento_limiteParticipantes}
+                            onChange={(e) =>
+                                setEventoEmEdicao({
+                                    ...eventoEmEdicao,
+                                    evento_limiteParticipantes: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <p>
+                            <strong>Participantes inscritos:</strong>{" "}
+                            {eventoEmEdicao.numero_participantes}
+                        </p>
+
+                        <button type="submit" className="btn btn-primary">
+                            Guardar alterações
+                        </button>
+                    </form>
                 </ModalDetalhes>
             )}
         </div>
