@@ -8,7 +8,9 @@ function DestaqueCard({
                           votado = false,
                           onVote,
                           podeEliminar,
-                          onDelete
+                          onDelete,
+                          podeEditar,
+                          onEdit
                       }) {
     return (
         <article className="listagem-card">
@@ -27,6 +29,14 @@ function DestaqueCard({
                 {podeVotar && (
                     <button className={`btn-voto ${votado ? "votado" : ""}`} onClick={onVote}>
                         ♥
+                    </button>
+                )}
+                {podeEditar && (
+                    <button
+                        className="btn btn-secondary"
+                        onClick={onEdit}
+                    >
+                        Editar
                     </button>
                 )}
                 {podeEliminar && (
