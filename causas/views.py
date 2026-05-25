@@ -242,19 +242,78 @@ def evento_detail(request, evento_id):
 
 @api_view(['GET', 'POST'])
 def participantes(request, evento_id):
-    if request.method == 'GET':
+    try:
         evento = Evento.objects.get(pk=evento_id)
+    except Evento.DoesNotExist:
+        return Response(
+            {"msg": "Evento não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == 'GET':
         lista_participantes = evento.participante_set.all()
         serializer = ParticipanteSerializer(lista_participantes, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = ParticipanteSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not request.user.is_authenticated:
+            return Response(
+                {"msg": "Tem de estar autenticado para se inscrever num evento."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        if not evento.evento_ativo:
+            return Response(
+                {"msg": "Não é possível inscrever-se num evento inativo."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        ja_inscrito = Participante.objects.filter(
+            participante_evento=evento,
+            participante_user=request.user
+        ).exists()
+
+        if ja_inscrito:
+            return Response(
+                {"msg": "Já está inscrito neste evento."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        numero_participantes = evento.participante_set.count()
+
+        if numero_participantes >= evento.evento_limiteParticipantes:
+            evento.evento_lotado = True
+            evento.save()
+
+            return Response(
+                {"msg": "Este evento já está lotado."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        participante = Participante.objects.create(
+            participante_evento=evento,
+            participante_user=request.user
+        )
+
+        numero_participantes = evento.participante_set.count()
+
+        if numero_participantes >= evento.evento_limiteParticipantes:
+            evento.evento_lotado = True
+            evento.save()
+
+        serializer = ParticipanteSerializer(participante)
+
+        return Response(
+            {
+                "msg": "Inscrição realizada com sucesso.",
+                "participante": serializer.data,
+                "numero_participantes": numero_participantes,
+                "evento_lotado": evento.evento_lotado
+            },
+            status=status.HTTP_201_CREATED
+        )
+
 
 @api_view(['GET', 'POST'])
 def comentarios_causa(request, causa_id):

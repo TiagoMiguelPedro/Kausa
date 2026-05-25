@@ -62,6 +62,56 @@ function Eventos() {
             });
     };
 
+    const podeInscreverEvento = (evento) => {
+        if (!user) return false;
+
+        return (
+            evento.evento_ativo &&
+            !evento.evento_lotado &&
+            evento.numero_participantes < evento.evento_limiteParticipantes
+        );
+    };
+
+    const inscreverEvento = (eventoId) => {
+        axios.post(
+            `http://localhost:8000/causas/eventos/${eventoId}/participantes/`,
+            {},
+            {
+                withCredentials: true,
+                headers: {
+                    "X-CSRFToken": getCSRFToken()
+                }
+            }
+        )
+            .then((response) => {
+                alert(response.data.msg);
+
+                setEventos((eventosAtuais) =>
+                    eventosAtuais.map((evento) =>
+                        evento.id === eventoId
+                            ? {
+                                ...evento,
+                                numero_participantes: response.data.numero_participantes,
+                                evento_lotado: response.data.evento_lotado
+                            }
+                            : evento
+                    )
+                );
+
+                if (eventoSelecionado?.id === eventoId) {
+                    setEventoSelecionado((eventoAtual) => ({
+                        ...eventoAtual,
+                        numero_participantes: response.data.numero_participantes,
+                        evento_lotado: response.data.evento_lotado
+                    }));
+                }
+            })
+            .catch((err) => {
+                console.error("Erro ao inscrever no evento:", err.response?.data || err);
+                alert(err.response?.data?.msg || "Erro ao inscrever no evento.");
+            });
+    };
+
     return (
         <div className="page">
             <h1>Eventos</h1>
@@ -80,6 +130,8 @@ function Eventos() {
                             onClick={() => setEventoSelecionado(evento)}
                             podeEliminar={podeEliminarEvento(evento)}
                             onDelete={() => eliminarEvento(evento.id)}
+                            podeInscrever={podeInscreverEvento(evento)}
+                            onInscrever={() => inscreverEvento(evento.id)}
                         />
                     ))
                 )}
