@@ -112,7 +112,10 @@ def causa_detail(request, causa_id):
             )
 
         causa.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"msg": "Causa eliminada com sucesso."},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -480,6 +483,7 @@ def login_view(request):
             "email": user.email,
             "first_name": user.first_name,
             "last_name": user.last_name,
+            "is_admin": user.is_staff or user.is_superuser,
         }
     })
 

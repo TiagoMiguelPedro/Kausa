@@ -4,10 +4,13 @@ import DestaqueCard from "../cards/DestaqueCard.jsx";
 import ModalDetalhes from "../modal/ModalDetalhes.jsx";
 
 function Causas() {
+
     const [causas, setCausas] = useState([]);
     const [causaSelecionada, setCausaSelecionada] = useState(null);
 
     const URL_CAUSAS = "http://localhost:8000/causas/causas/";
+
+    const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
         axios.get(URL_CAUSAS)
@@ -18,6 +21,39 @@ function Causas() {
                 console.error("Erro ao carregar causas:", err);
             });
     }, []);
+
+    const getCSRFToken = () => {
+        return document.cookie
+            .split("; ")
+            .find(row => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+    };
+
+    const eliminarCausa = (causaId) => {
+        if (!window.confirm("Tens a certeza que queres eliminar esta causa?")) {
+            return;
+        }
+
+        axios.delete(`http://localhost:8000/causas/causa/${causaId}`, {
+            withCredentials: true,
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            }
+        })
+            .then(() => {
+                setCausas((causasAtuais) =>
+                    causasAtuais.filter((causa) => causa.id !== causaId)
+                );
+
+                if (causaSelecionada?.id === causaId) {
+                    setCausaSelecionada(null);
+                }
+            })
+            .catch((err) => {
+                console.error("Erro ao eliminar causa:", err.response?.data || err);
+                alert(err.response?.data?.msg || "Erro ao eliminar causa.");
+            });
+    };
 
     const mostrarEstado = (estado) => {
         if (estado === 0) return "Em votação";
@@ -82,6 +118,8 @@ function Causas() {
                             podeVotar={causa.causa_estado === 0}
                             votado={causa.votado}
                             onVote={() => votarCausa(causa.id)}
+                            podeEliminar={user?.is_admin}
+                            onDelete={() => eliminarCausa(causa.id)}
                         />
                     ))
                 )}
@@ -109,6 +147,14 @@ function Causas() {
                         <strong>Estado:</strong>{" "}
                         {mostrarEstado(causaSelecionada.causa_estado)}
                     </p>
+                    {user?.is_admin && (
+                        <button
+                            className="btn btn-danger"
+                            onClick={() => eliminarCausa(causaSelecionada.id)}
+                        >
+                            Eliminar causa
+                        </button>
+                    )}
                 </ModalDetalhes>
             )}
         </div>
