@@ -2,12 +2,14 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import DestaqueCard from "../cards/DestaqueCard.jsx";
 import ModalDetalhes from "../modal/ModalDetalhes.jsx";
+import Comentarios from "../comentarios/Comentarios.jsx";
 
 function Causas() {
 
     const [causas, setCausas] = useState([]);
     const [causaSelecionada, setCausaSelecionada] = useState(null);
     const [causaEmEdicao, setCausaEmEdicao] = useState(null);
+    const [causaComentarios, setCausaComentarios] = useState(null);
 
     const URL_CAUSAS = "http://localhost:8000/causas/causas/";
 
@@ -172,6 +174,8 @@ function Causas() {
                             onDelete={() => eliminarCausa(causa.id)}
                             podeEditar={podeEditarCausa(causa)}
                             onEdit={() => setCausaEmEdicao(causa)}
+                            podeComentar={true}
+                            onComentarios={() => setCausaComentarios(causa)}
                         />
                     ))
                 )}
@@ -246,7 +250,14 @@ function Causas() {
                     </form>
                 </ModalDetalhes>
             )}
-
+            {causaComentarios && (
+                <ModalDetalhes
+                    titulo={`Comentários - ${causaComentarios.causa_nome}`}
+                    onClose={() => setCausaComentarios(null)}
+                >
+                    <Comentarios tipo="causa" id={causaComentarios.id}/>
+                </ModalDetalhes>
+            )}
         </div>
     );
 }

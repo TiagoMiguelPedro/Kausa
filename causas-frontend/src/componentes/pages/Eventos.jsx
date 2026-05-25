@@ -2,11 +2,13 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import DestaqueCard from "../cards/DestaqueCard.jsx";
 import ModalDetalhes from "../modal/ModalDetalhes.jsx";
+import Comentarios from "../comentarios/Comentarios.jsx";
 
 function Eventos() {
     const [eventos, setEventos] = useState([]);
     const [eventoSelecionado, setEventoSelecionado] = useState(null);
     const [eventoEmEdicao, setEventoEmEdicao] = useState(null);
+    const [eventoComentarios, setEventoComentarios] = useState(null);
 
     const URL_EVENTOS = "http://localhost:8000/causas/eventos/";
 
@@ -186,6 +188,8 @@ function Eventos() {
                             onInscrever={() => inscreverEvento(evento.id)}
                             podeEditar={podeEditarEvento(evento)}
                             onEdit={() => setEventoEmEdicao(evento)}
+                            podeComentar={true}
+                            onComentarios={() => setEventoComentarios(evento)}
                         />
                     ))
                 )}
@@ -325,6 +329,14 @@ function Eventos() {
                             Guardar alterações
                         </button>
                     </form>
+                </ModalDetalhes>
+            )}
+            {eventoComentarios && (
+                <ModalDetalhes
+                    titulo={`Comentários - ${eventoComentarios.evento_nome}`}
+                    onClose={() => setEventoComentarios(null)}
+                >
+                    <Comentarios tipo="evento" id={eventoComentarios.id}/>
                 </ModalDetalhes>
             )}
         </div>

@@ -365,7 +365,11 @@ def comentarios_causa(request, causa_id):
             comentario_causa=causa
         ).order_by('-comentario_dataComentario')
 
-        serializer = ComentarioSerializer(comentarios, many=True)
+        serializer = ComentarioSerializer(
+            comentarios,
+            many=True,
+            context={"request": request}
+        )
         return Response(serializer.data)
 
     elif request.method == 'POST':
@@ -389,7 +393,10 @@ def comentarios_causa(request, causa_id):
             comentario_texto=texto
         )
 
-        serializer = ComentarioSerializer(comentario)
+        serializer = ComentarioSerializer(
+            comentario,
+            context={"request": request}
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -408,7 +415,11 @@ def comentarios_evento(request, evento_id):
             comentario_evento=evento
         ).order_by('-comentario_dataComentario')
 
-        serializer = ComentarioSerializer(comentarios, many=True)
+        serializer = ComentarioSerializer(
+            comentarios,
+            many=True,
+            context={"request": request}
+        )
         return Response(serializer.data)
 
     elif request.method == 'POST':
@@ -432,7 +443,10 @@ def comentarios_evento(request, evento_id):
             comentario_texto=texto
         )
 
-        serializer = ComentarioSerializer(comentario)
+        serializer = ComentarioSerializer(
+            comentario,
+            context={"request": request}
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

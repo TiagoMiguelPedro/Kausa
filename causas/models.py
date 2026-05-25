@@ -73,3 +73,11 @@ class LikeComentario(models.Model):
     likeComentario_user = models.ForeignKey(User, on_delete=models.CASCADE)
     likeComentario_comentario = models.ForeignKey(Comentario, on_delete=models.CASCADE)
     likeComentario_dataLike = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["likeComentario_user", "likeComentario_comentario"],
+                name="unique_like_por_user_comentario"
+            )
+        ]
