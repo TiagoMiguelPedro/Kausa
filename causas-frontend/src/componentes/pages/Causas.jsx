@@ -7,6 +7,7 @@ function Causas() {
 
     const [causas, setCausas] = useState([]);
     const [causaSelecionada, setCausaSelecionada] = useState(null);
+    const [causaEmEdicao, setCausaEmEdicao] = useState(null);
 
     const URL_CAUSAS = "http://localhost:8000/causas/causas/";
 
@@ -53,6 +54,55 @@ function Causas() {
                 console.error("Erro ao eliminar causa:", err.response?.data || err);
                 alert(err.response?.data?.msg || "Erro ao eliminar causa.");
             });
+    };
+
+    const podeEditarCausa = (causa) => {
+        if (!user) return false;
+
+        if (user.is_admin) return true;
+
+        return user.id === causa.causa_responsavel && causa.causa_estado === 0;
+    };
+
+    const editarCausa = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/causas/causa/${causaEmEdicao.id}`,
+                {
+                    causa_nome: causaEmEdicao.causa_nome,
+                    causa_descricao: causaEmEdicao.causa_descricao,
+                    causa_nrVotos: causaEmEdicao.causa_nrVotos,
+                    causa_estado: causaEmEdicao.causa_estado
+                },
+                {
+                    withCredentials: true,
+                    headers: {
+                        "X-CSRFToken": getCSRFToken()
+                    }
+                }
+            );
+
+            setCausas((causasAtuais) =>
+                causasAtuais.map((causa) =>
+                    causa.id === causaEmEdicao.id
+                        ? {
+                            ...causa,
+                            causa_nome: causaEmEdicao.causa_nome,
+                            causa_descricao: causaEmEdicao.causa_descricao,
+                        }
+                        : causa
+                )
+            );
+
+            setCausaEmEdicao(null);
+            setCausaSelecionada(null);
+
+        } catch (err) {
+            console.error("Erro ao editar causa:", err.response?.data || err);
+            alert(err.response?.data?.msg || "Erro ao editar causa.");
+        }
     };
 
     const mostrarEstado = (estado) => {
@@ -120,6 +170,8 @@ function Causas() {
                             onVote={() => votarCausa(causa.id)}
                             podeEliminar={user?.is_admin}
                             onDelete={() => eliminarCausa(causa.id)}
+                            podeEditar={podeEditarCausa(causa)}
+                            onEdit={() => setCausaEmEdicao(causa)}
                         />
                     ))
                 )}
@@ -157,6 +209,44 @@ function Causas() {
                     )}
                 </ModalDetalhes>
             )}
+            {causaEmEdicao && (
+                <ModalDetalhes
+                    titulo="Editar causa"
+                    onClose={() => setCausaEmEdicao(null)}
+                >
+                    <form className="form-container" onSubmit={editarCausa}>
+                        <label>Nome da causa:</label>
+                        <input
+                            type="text"
+                            value={causaEmEdicao.causa_nome}
+                            onChange={(e) =>
+                                setCausaEmEdicao({
+                                    ...causaEmEdicao,
+                                    causa_nome: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <label>Descrição:</label>
+                        <textarea
+                            value={causaEmEdicao.causa_descricao}
+                            onChange={(e) =>
+                                setCausaEmEdicao({
+                                    ...causaEmEdicao,
+                                    causa_descricao: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <button type="submit" className="btn btn-primary">
+                            Guardar alterações
+                        </button>
+                    </form>
+                </ModalDetalhes>
+            )}
+
         </div>
     );
 }

@@ -8,7 +8,7 @@ function HeroCard() {
                 <p>Descobre causas que te inspiram, participa em eventos e faz a diferença na tua comunidade.</p>
                 <div className="hero-actions">
                     <Link to="/causas" className="btn btn-primary">Explorar causas</Link>
-                    <Link to="/criar-causa" className="btn btn-secondary">Criar causa</Link>
+                    <Link to="/eventos" className="btn btn-secondary">Explorar eventos</Link>
                 </div>
             </div>
         </section>
