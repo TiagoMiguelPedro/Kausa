@@ -1,14 +1,9 @@
 from django.shortcuts import render
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
 from .serializers import *
 from .models import Causa, Evento, Participante, CausaVoto, Comentario, LikeComentario
-from django.contrib.auth.models import User
-
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
@@ -334,3 +329,53 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return Response({"msg": "Logout com sucesso"})
+
+#Votos Causas----------------------------------
+
+LIMITE_VOTOS_CAUSA = 5
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def votar_causa(request, causa_id):
+    try:
+        causa = Causa.objects.get(id=causa_id)
+    except Causa.DoesNotExist:
+        return Response(
+            {"erro": "Causa não encontrada."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if causa.causa_estado != 0:
+        return Response(
+            {"erro": "Só é possível votar em causas em votação."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    voto_existente = CausaVoto.objects.filter(
+        causaVoto_causa=causa,
+        causaVoto_user=request.user
+    ).exists()
+
+    if voto_existente:
+        return Response(
+            {"erro": "Já votaste nesta causa."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    CausaVoto.objects.create(
+        causaVoto_causa=causa,
+        causaVoto_user=request.user
+    )
+
+    causa.causa_nrVotos += 1
+
+    if causa.causa_nrVotos >= LIMITE_VOTOS_CAUSA:
+        causa.causa_estado = 1
+
+    causa.save()
+
+    return Response({
+        "mensagem": "Voto registado com sucesso.",
+        "causa_nrVotos": causa.causa_nrVotos,
+        "causa_estado": causa.causa_estado
+    })

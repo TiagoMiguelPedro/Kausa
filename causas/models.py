@@ -46,6 +46,16 @@ class CausaVoto(models.Model):
     causaVoto_user = models.ForeignKey(User, on_delete=models.CASCADE)
     causaVoto_dataVoto = models.DateTimeField(default=timezone.now)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["causaVoto_causa", "causaVoto_user"],
+                name="unique_voto_por_user_causa"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.causaVoto_user.username} votou em {self.causaVoto_causa.causa_nome}"
 
 
 class Comentario(models.Model):

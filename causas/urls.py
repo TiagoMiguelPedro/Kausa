@@ -6,6 +6,7 @@ app_name = 'causas'
 urlpatterns = [
     path('', views.causas),
     path('causas/', views.causas),
+    path("<int:causa_id>/votar/", views.votar_causa, name="votar_causa"),
     path('causa/<int:causa_id>', views.causa_detail),
     path('eventos/', views.eventos),
     path('causa/<int:causa_id>/eventos/', views.eventos_por_causa),
@@ -15,5 +16,4 @@ urlpatterns = [
     path("api/login/", views.login_view, name="login"),
     path("api/logout/", views.logout_view, name="logout"),
     path("api/user/", views.user_view, name="user"),
-
 ]
