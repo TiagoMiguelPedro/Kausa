@@ -69,11 +69,42 @@ class CausaVotoSerializer(serializers.ModelSerializer):
 
 class ComentarioSerializer(serializers.ModelSerializer):
     comentario_dataComentario = serializers.DateTimeField(read_only=True, required=False)
+    comentario_user_nome = serializers.CharField(
+        source='comentario_user.username',
+        read_only=True
+    )
+    total_likes = serializers.SerializerMethodField()
+    liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Comentario
-        fields = ('id', 'comentario_causa', 'comentario_user', 'comentario_evento', 'comentario_texto',
-                  'comentario_dataComentario')
+        fields = (
+            'id',
+            'comentario_causa',
+            'comentario_user',
+            'comentario_user_nome',
+            'comentario_evento',
+            'comentario_texto',
+            'comentario_dataComentario',
+            'total_likes',
+            'liked'
+        )
+
+    def get_total_likes(self, obj):
+        return LikeComentario.objects.filter(
+            likeComentario_comentario=obj
+        ).count()
+
+    def get_liked(self, obj):
+        request = self.context.get("request")
+
+        if request and request.user.is_authenticated:
+            return LikeComentario.objects.filter(
+                likeComentario_comentario=obj,
+                likeComentario_user=request.user
+            ).exists()
+
+        return False
 
 
 class LikeComentarioSerializer(serializers.ModelSerializer):

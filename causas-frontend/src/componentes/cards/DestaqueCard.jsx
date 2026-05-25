@@ -12,7 +12,9 @@ function DestaqueCard({
                           podeEditar,
                           onEdit,
                           podeInscrever,
-                          onInscrever
+                          onInscrever,
+                          podeComentar,
+                          onComentarios
                       }) {
     return (
         <article className="listagem-card">
@@ -27,6 +29,14 @@ function DestaqueCard({
                 <button className="btn btn-primary" onClick={onClick}>
                     {textoBotao}
                 </button>
+                {podeComentar && (
+                    <button
+                        className="btn btn-secondary"
+                        onClick={onComentarios}
+                    >
+                        Comentários
+                    </button>
+                )}
 
                 {podeVotar && (
                     <button className={`btn-voto ${votado ? "votado" : ""}`} onClick={onVote}>
