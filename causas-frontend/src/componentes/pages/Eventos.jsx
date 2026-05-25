@@ -9,6 +9,8 @@ function Eventos() {
 
     const URL_EVENTOS = "http://localhost:8000/causas/eventos/";
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     useEffect(() => {
         axios.get(URL_EVENTOS)
             .then((request) => {
@@ -18,6 +20,47 @@ function Eventos() {
                 console.error("Erro ao carregar eventos:", err);
             });
     }, []);
+
+    const getCSRFToken = () => {
+        return document.cookie
+            .split("; ")
+            .find(row => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+    };
+
+    const podeEliminarEvento = (evento) => {
+        if (!user) return false;
+
+        if (user.is_admin) return true;
+
+        return user.id === evento.evento_criador && evento.numero_participantes === 0;
+    };
+
+    const eliminarEvento = (eventoId) => {
+        if (!window.confirm("Tens a certeza que queres eliminar este evento?")) {
+            return;
+        }
+
+        axios.delete(`http://localhost:8000/causas/eventos/${eventoId}`, {
+            withCredentials: true,
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            }
+        })
+            .then(() => {
+                setEventos((eventosAtuais) =>
+                    eventosAtuais.filter((evento) => evento.id !== eventoId)
+                );
+
+                if (eventoSelecionado?.id === eventoId) {
+                    setEventoSelecionado(null);
+                }
+            })
+            .catch((err) => {
+                console.error("Erro ao eliminar evento:", err.response?.data || err);
+                alert(err.response?.data?.msg || "Erro ao eliminar evento.");
+            });
+    };
 
     return (
         <div className="page">
@@ -35,6 +78,8 @@ function Eventos() {
                             descricao={evento.evento_descricao}
                             textoBotao="Ver detalhes"
                             onClick={() => setEventoSelecionado(evento)}
+                            podeEliminar={podeEliminarEvento(evento)}
+                            onDelete={() => eliminarEvento(evento.id)}
                         />
                     ))
                 )}
@@ -47,6 +92,10 @@ function Eventos() {
                 >
                     <p>
                         <strong>Causa:</strong> {eventoSelecionado.causa_nome}
+                    </p>
+                    <p>
+                        <strong>Criador:</strong>{" "}
+                        {eventoSelecionado.evento_criador_nome || "N/A"}
                     </p>
 
                     <p>
@@ -66,6 +115,10 @@ function Eventos() {
                         <strong>Limite de participantes:</strong>{" "}
                         {eventoSelecionado.evento_limiteParticipantes}
                     </p>
+                    <p>
+                        <strong>Participantes inscritos:</strong>{" "}
+                        {eventoSelecionado.numero_participantes}
+                    </p>
 
                     <p>
                         <strong>Lotado:</strong>{" "}
@@ -76,6 +129,14 @@ function Eventos() {
                         <strong>Ativo:</strong>{" "}
                         {eventoSelecionado.evento_ativo ? "Sim" : "Não"}
                     </p>
+                    {podeEliminarEvento(eventoSelecionado) && (
+                        <button
+                            className="btn btn-danger"
+                            onClick={() => eliminarEvento(eventoSelecionado.id)}
+                        >
+                            Eliminar evento
+                        </button>
+                    )}
                 </ModalDetalhes>
             )}
         </div>
