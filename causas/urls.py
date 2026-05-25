@@ -11,7 +11,7 @@ urlpatterns = [
     path('eventos/', views.eventos),
     path('causa/<int:causa_id>/eventos/', views.eventos_por_causa),
     path('eventos/<int:evento_id>', views.evento_detail),
-    path('eventos/<int:evento_id>/participantes', views.participantes),
+    path('eventos/<int:evento_id>/participantes/', views.participantes),
     path("api/signup/", views.signup),
     path("api/login/", views.login_view, name="login"),
     path("api/logout/", views.logout_view, name="logout"),
