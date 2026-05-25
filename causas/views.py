@@ -16,8 +16,10 @@ from rest_framework.decorators import (
 
 from rest_framework.permissions import AllowAny
 
+
 def is_admin(user):
     return user.is_staff or user.is_superuser
+
 
 @api_view(["GET"])
 def user_view(request):
@@ -64,7 +66,6 @@ def causas(request):
 
 @api_view(['PUT', 'DELETE'])
 def causa_detail(request, causa_id):
-
     if not request.user.is_authenticated:
         return Response(
             {"msg": "Tem de estar autenticado."},
@@ -118,7 +119,6 @@ def causa_detail(request, causa_id):
 
 @api_view(['GET', 'POST'])
 def eventos(request):
-
     if request.method == 'GET':
         lista_eventos = Evento.objects.all()
         serializer = EventoSerializer(lista_eventos, many=True)
@@ -161,7 +161,6 @@ def eventos(request):
 
 @api_view(['GET', 'POST'])
 def eventos_por_causa(request, causa_id):
-
     if request.method == 'GET':
         causa = Causa.objects.get(pk=causa_id)
         lista_eventos = causa.evento_set.all()
@@ -179,7 +178,6 @@ def eventos_por_causa(request, causa_id):
 
 @api_view(['PUT', 'DELETE'])
 def evento_detail(request, evento_id):
-
     if not request.user.is_authenticated:
         return Response(
             {"msg": "Tem de estar autenticado."},
@@ -196,7 +194,6 @@ def evento_detail(request, evento_id):
     user_is_admin = is_admin(request.user)
     user_is_criador = evento.evento_criador == request.user
     user_is_responsavel_causa = evento.evento_causa.causa_responsavel == request.user
-
 
     if request.method == 'PUT':
         if not user_is_admin and not user_is_criador and not user_is_responsavel_causa:
@@ -236,7 +233,6 @@ def evento_detail(request, evento_id):
 
 @api_view(['GET', 'POST'])
 def participantes(request, evento_id):
-
     if request.method == 'GET':
         evento = Evento.objects.get(pk=evento_id)
         lista_participantes = evento.participante_set.all()
@@ -290,7 +286,6 @@ def signup(request):
 @authentication_classes([])
 @permission_classes([AllowAny])
 def login_view(request):
-
     username = request.data.get("username", "").strip()
     password = request.data.get("password", "").strip()
 
@@ -330,9 +325,11 @@ def logout_view(request):
     logout(request)
     return Response({"msg": "Logout com sucesso"})
 
-#Votos Causas----------------------------------
+
+# Votos Causas----------------------------------
 
 LIMITE_VOTOS_CAUSA = 5
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -351,17 +348,29 @@ def votar_causa(request, causa_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    voto_existente = CausaVoto.objects.filter(
+    voto = CausaVoto.objects.filter(
         causaVoto_causa=causa,
         causaVoto_user=request.user
-    ).exists()
+    ).first()
 
-    if voto_existente:
-        return Response(
-            {"erro": "Já votaste nesta causa."},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    # REMOVER VOTO
+    if voto:
+        voto.delete()
 
+        causa.causa_nrVotos -= 1
+
+        if causa.causa_nrVotos < 0:
+            causa.causa_nrVotos = 0
+
+        causa.save()
+
+        return Response({
+            "votado": False,
+            "causa_nrVotos": causa.causa_nrVotos,
+            "causa_estado": causa.causa_estado
+        })
+
+    # ADICIONAR VOTO
     CausaVoto.objects.create(
         causaVoto_causa=causa,
         causaVoto_user=request.user
@@ -369,13 +378,15 @@ def votar_causa(request, causa_id):
 
     causa.causa_nrVotos += 1
 
+    LIMITE_VOTOS_CAUSA = 5
+
     if causa.causa_nrVotos >= LIMITE_VOTOS_CAUSA:
         causa.causa_estado = 1
 
     causa.save()
 
     return Response({
-        "mensagem": "Voto registado com sucesso.",
+        "votado": True,
         "causa_nrVotos": causa.causa_nrVotos,
         "causa_estado": causa.causa_estado
     })

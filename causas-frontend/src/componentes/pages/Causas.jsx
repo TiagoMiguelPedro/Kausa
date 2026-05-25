@@ -51,6 +51,7 @@ function Causas() {
                             ...causa,
                             causa_nrVotos: response.data.causa_nrVotos,
                             causa_estado: response.data.causa_estado,
+                            votado: response.data.votado,
                         }
                         : causa
                 )
@@ -79,6 +80,7 @@ function Causas() {
                             textoBotao="Ver detalhes"
                             onClick={() => setCausaSelecionada(causa)}
                             podeVotar={causa.causa_estado === 0}
+                            votado={causa.votado}
                             onVote={() => votarCausa(causa.id)}
                         />
                     ))

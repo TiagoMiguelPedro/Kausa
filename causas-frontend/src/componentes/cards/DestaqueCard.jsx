@@ -1,4 +1,4 @@
-function DestaqueCard({titulo, subtitulo, descricao, textoBotao = "Ver detalhes", onClick, podeVotar = false, onVote}) {
+function DestaqueCard({titulo, subtitulo, descricao, textoBotao = "Ver detalhes", onClick, podeVotar = false,votado=false, onVote}) {
     return (
         <article className="listagem-card">
             <h2>{titulo}</h2>
@@ -14,8 +14,8 @@ function DestaqueCard({titulo, subtitulo, descricao, textoBotao = "Ver detalhes"
                 </button>
 
                 {podeVotar && (
-                    <button className="btn btn-primary" onClick={onVote}>
-                        Votar
+                    <button className={`btn-voto ${votado ? "votado" : ""}`} onClick={onVote}>
+                        ♥
                     </button>
                 )}
             </div>

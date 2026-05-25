@@ -280,6 +280,25 @@ button {
   font-weight: 700;
 }
 
+/* Votos */
+
+.btn-voto {
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: #999;
+}
+
+.btn-voto:hover {
+    transform: scale(1.1);
+}
+
+.btn-voto.votado {
+    color: darkgreen;
+}
+
 /* Stats */
 
 .stats {
