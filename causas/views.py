@@ -147,7 +147,7 @@ def eventos(request):
 
         if causa.causa_estado != 1:
             return Response(
-                {"msg": "Só é possível criar eventos para causas aprovadas."},
+                {"msg": "Só é possível criar eventos para causas ativas."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
