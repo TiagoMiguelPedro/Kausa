@@ -1,5 +1,7 @@
+import DestaqueCard from "../cards/DestaqueCard.jsx";
 
-function ModalDetalhes({ titulo, children, onClose }) {
+function ModalDetalhes({titulo, children, onClose}) {
+
     return (
         <div className="modal-overlay">
             <div className="modal-content">
@@ -12,6 +14,7 @@ function ModalDetalhes({ titulo, children, onClose }) {
                 <div className="modal-body">
                     {children}
                 </div>
+
             </div>
         </div>
     );

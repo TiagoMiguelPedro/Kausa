@@ -26,6 +26,42 @@ function Causas() {
         return "Desconhecido";
     };
 
+    const votarCausa = async (causaId) => {
+        try {
+            const csrftoken = document.cookie
+                .split("; ")
+                .find((row) => row.startsWith("csrftoken="))
+                ?.split("=")[1];
+
+            const response = await axios.post(
+                `http://localhost:8000/causas/${causaId}/votar/`,
+                {},
+                {
+                    withCredentials: true,
+                    headers: {
+                        "X-CSRFToken": csrftoken,
+                    },
+                }
+            );
+
+            setCausas((causasAtuais) =>
+                causasAtuais.map((causa) =>
+                    causa.id === causaId
+                        ? {
+                            ...causa,
+                            causa_nrVotos: response.data.causa_nrVotos,
+                            causa_estado: response.data.causa_estado,
+                        }
+                        : causa
+                )
+            );
+
+        } catch (err) {
+            console.error("Erro ao votar:", err);
+            alert(err.response?.data?.erro || "Erro ao votar na causa.");
+        }
+    };
+
     return (
         <div className="page">
             <h1>Causas</h1>
@@ -42,6 +78,8 @@ function Causas() {
                             descricao={causa.causa_descricao}
                             textoBotao="Ver detalhes"
                             onClick={() => setCausaSelecionada(causa)}
+                            podeVotar={causa.causa_estado === 0}
+                            onVote={() => votarCausa(causa.id)}
                         />
                     ))
                 )}
