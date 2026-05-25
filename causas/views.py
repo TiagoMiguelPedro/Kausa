@@ -253,6 +253,164 @@ def participantes(request, evento_id):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET', 'POST'])
+def comentarios_causa(request, causa_id):
+    try:
+        causa = Causa.objects.get(pk=causa_id)
+    except Causa.DoesNotExist:
+        return Response(
+            {"msg": "Causa não encontrada."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == 'GET':
+        comentarios = Comentario.objects.filter(
+            comentario_causa=causa
+        ).order_by('-comentario_dataComentario')
+
+        serializer = ComentarioSerializer(comentarios, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            return Response(
+                {"msg": "Tem de estar autenticado para comentar."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        texto = request.data.get("comentario_texto")
+
+        if not texto:
+            return Response(
+                {"msg": "O comentário não pode estar vazio."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        comentario = Comentario.objects.create(
+            comentario_causa=causa,
+            comentario_user=request.user,
+            comentario_texto=texto
+        )
+
+        serializer = ComentarioSerializer(comentario)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'POST'])
+def comentarios_evento(request, evento_id):
+    try:
+        evento = Evento.objects.get(pk=evento_id)
+    except Evento.DoesNotExist:
+        return Response(
+            {"msg": "Evento não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == 'GET':
+        comentarios = Comentario.objects.filter(
+            comentario_evento=evento
+        ).order_by('-comentario_dataComentario')
+
+        serializer = ComentarioSerializer(comentarios, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            return Response(
+                {"msg": "Tem de estar autenticado para comentar."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        texto = request.data.get("comentario_texto")
+
+        if not texto:
+            return Response(
+                {"msg": "O comentário não pode estar vazio."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        comentario = Comentario.objects.create(
+            comentario_evento=evento,
+            comentario_user=request.user,
+            comentario_texto=texto
+        )
+
+        serializer = ComentarioSerializer(comentario)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+def apagar_comentario(request, comentario_id):
+    if not request.user.is_authenticated:
+        return Response(
+            {"msg": "Tem de estar autenticado."},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    try:
+        comentario = Comentario.objects.get(pk=comentario_id)
+    except Comentario.DoesNotExist:
+        return Response(
+            {"msg": "Comentário não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    user_is_admin = is_admin(request.user)
+    user_is_autor = comentario.comentario_user == request.user
+
+    if not user_is_admin and not user_is_autor:
+        return Response(
+            {"msg": "Não tem permissão para apagar este comentário."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    comentario.delete()
+    return Response(
+        {"msg": "Comentário apagado com sucesso."},
+        status=status.HTTP_204_NO_CONTENT
+    )
+
+
+@api_view(['POST'])
+def like_comentario(request, comentario_id):
+    if not request.user.is_authenticated:
+        return Response(
+            {"msg": "Tem de estar autenticado para gostar de um comentário."},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    try:
+        comentario = Comentario.objects.get(pk=comentario_id)
+    except Comentario.DoesNotExist:
+        return Response(
+            {"msg": "Comentário não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    like = LikeComentario.objects.filter(
+        likeComentario_comentario=comentario,
+        likeComentario_user=request.user
+    ).first()
+
+    if like:
+        like.delete()
+        liked = False
+    else:
+        LikeComentario.objects.create(
+            likeComentario_comentario=comentario,
+            likeComentario_user=request.user
+        )
+        liked = True
+
+    total_likes = LikeComentario.objects.filter(
+        likeComentario_comentario=comentario
+    ).count()
+
+    return Response({
+        "liked": liked,
+        "total_likes": total_likes
+    })
+
 
 @api_view(["POST"])
 def signup(request):

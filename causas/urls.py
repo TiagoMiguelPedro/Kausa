@@ -16,4 +16,9 @@ urlpatterns = [
     path("api/login/", views.login_view, name="login"),
     path("api/logout/", views.logout_view, name="logout"),
     path("api/user/", views.user_view, name="user"),
+
+    path('causa/<int:causa_id>/comentarios/', views.comentarios_causa, name='comentarios_causa'),
+    path('eventos/<int:evento_id>/comentarios/', views.comentarios_evento, name='comentarios_evento'),
+    path('comentarios/<int:comentario_id>/apagar/', views.apagar_comentario, name='apagar_comentario'),
+    path('comentarios/<int:comentario_id>/like/', views.like_comentario, name='like_comentario'),
 ]
