@@ -211,10 +211,45 @@ def evento_detail(request, evento_id):
                 status=status.HTTP_403_FORBIDDEN
             )
 
+        novo_limite = request.data.get("evento_limiteParticipantes")
+
+        if novo_limite is not None:
+            try:
+                novo_limite = int(novo_limite)
+            except ValueError:
+                return Response(
+                    {"msg": "O limite de participantes tem de ser um número válido."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            numero_participantes = evento.participante_set.count()
+
+            if novo_limite < numero_participantes:
+                return Response(
+                    {
+                        "msg": f"Não pode definir um limite inferior ao número atual de participantes inscritos ({numero_participantes})."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
         serializer = EventoSerializer(evento, data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            evento_atualizado = serializer.save()
+
+            numero_participantes = evento_atualizado.participante_set.count()
+
+            if numero_participantes >= evento_atualizado.evento_limiteParticipantes:
+                evento_atualizado.evento_lotado = True
+            else:
+                evento_atualizado.evento_lotado = False
+
+            evento_atualizado.save()
+
+            serializer = EventoSerializer(evento_atualizado)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
 
